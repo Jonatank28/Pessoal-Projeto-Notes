@@ -2,26 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    html {
+        font-family: 'Inter', sans-serif;
+    }
+}
+
+/* Temas */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    --bg-primary: #FAFAFA;
+    --bg-secondary: #FFFFFF;
+    --text-primary: #0e1726;
+    --text-secundary: #888ea8;
+    --divider: #e5e7eb;
+    /* Cores do menu */
+    --hover-bg: #F3F3F6;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+    --bg-primary: #18181B;
+    --bg-secondary: #0E0E10;
+    --text-primary: #FFFFFF;
+    --text-secundary: #888ea8;
+    --divider: #2D2D30;
+    /* Cores do menu */
+    --hover-bg: #1F1F23;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* Cores das tegs de tarefas */
+.fill-pessoal {
+    fill: #2563eb;
+    color: #2563eb;
+}
+
+.fill-trabalho {
+    fill: #10b981;
+    color: #10b981;
+}
+
+.fill-social {
+    fill: #f59e0b;
+    color: #f59e0b;
+}
+
+.fill-important {
+    fill: #eb2c56;
+    color: #eb2c56;
+}
+
+/* Divisor de links no menu */
+.divider {
+    border-top: 1px solid var(--divider);
+
+}
+
+/* Overlay do modal */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* z-index: 500; */
+}
+
+/* Desabilitar scroll quando modal estiver aberto */
+.modal-open {
+    overflow: hidden;
 }
