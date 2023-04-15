@@ -1,66 +1,11 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import Modal from './dialog'
+import { NotesContext } from '../contexts/notesContext'
 
 const Card = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [note, setNote] = useState({})
-    const [notes, setNotes] = useState([
-        {
-            id: 1,
-            title: 'Note 1',
-            name: 'Jonatan',
-            src: 'https://github.com/Jonatank28.png',
-            alt: 'Foto perfil Github',
-            content:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.',
-            tag: 'pessoal',
-            date: '11/01/2020',
-        },
-        {
-            id: 2,
-            title: 'Note 2',
-            name: 'Jonatan',
-            src: 'https://github.com/Jonatank28.png',
-            alt: 'Foto perfil Github',
-            content:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.',
-            tag: 'trabalho',
-            date: '11/01/2020',
-        },
-        {
-            id: 3,
-            title: 'Note 3',
-            name: 'Jonatan',
-            src: 'https://github.com/Jonatank28.png',
-            alt: 'Foto perfil Github',
-            content:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.',
-            tag: 'social',
-            date: '11/01/2020',
-        },
-        {
-            id: 4,
-            title: 'Note 4',
-            name: 'Jonatan',
-            src: 'https://github.com/Jonatank28.png',
-            alt: 'Foto perfil Github',
-            content:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.',
-            tag: '',
-            date: '11/01/2020',
-        },
-        {
-            id: 5,
-            title: 'Note 5',
-            name: 'Jonatan',
-            src: 'https://github.com/Jonatank28.png',
-            alt: 'Foto perfil Github',
-            content:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.',
-            tag: 'important',
-            date: '11/01/2020',
-        },
-    ])
+    const { notes, setNotes } = useContext(NotesContext)
 
     // Função que abre o modal
     const openModal = (note) => {

@@ -2,6 +2,8 @@ import Card from '@/components/Card'
 import { CgNotes } from 'react-icons/cg'
 import { FaRegStar } from 'react-icons/fa'
 import { useState } from 'react'
+import Modal from '@/components/dialog'
+import NewNoteForm from '@/components/NewNoteForm'
 
 const dataLinks = [
     {
@@ -38,6 +40,8 @@ const dataTags = [
 ]
 
 const Notes = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
     )
@@ -55,6 +59,16 @@ const Notes = () => {
 
     const handleTagClick = (index) => {
         setSelectedTags(index)
+    }
+
+    // Abrir modal
+    const handleOpenModal = () => {
+        setIsOpen(true)
+    }
+
+    // Fechar modal
+    const handleCloseModal = () => {
+        setIsOpen(false)
     }
 
     return (
@@ -202,14 +216,29 @@ const Notes = () => {
                         </div>
                     </div>
                     <div>
-                        <button class="w-full btn btn-primary">
-                            Add New Note
+                        <button
+                            class="w-full btn btn-primary"
+                            onClick={handleOpenModal}
+                        >
+                            Adicionar nova nota
                         </button>
                     </div>
                 </div>
                 {/* <div className="col-span-6 flex flex-wrap content-start justify-center gap-4 bg-secondary rounded-md p-4"> */}
                 <div className="col-span-12 lg:col-span-8 xl:col-span-9 2xl:col-span-10 flex flex-wrap content-start justify-center gap-4 bg-secondary rounded-md p-4">
                     <Card />
+                    <Modal
+                        isOpen={isOpen}
+                        onClose={handleCloseModal}
+                        title="Criar nova nota"
+                        DivClass="flex justify-end gap-2 items-center mt-6"
+                        btn1Class="btn btn-danger-outline"
+                        btn1Text="Cancelar"
+                        btn2Class="btn btn-primary"
+                        btn2Text="Adicionar nota"
+                    >
+                        <NewNoteForm />
+                    </Modal>
                 </div>
             </div>
         </main>
