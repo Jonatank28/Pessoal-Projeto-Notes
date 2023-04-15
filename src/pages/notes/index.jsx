@@ -202,7 +202,7 @@ const Notes = () => {
                         </div>
                     </div>
                     <div>
-                        <button class="w-full text-white bg-blue-600 p-1 mb-1 rounded-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 active:bg-blue-600">
+                        <button class="w-full btn btn-primary">
                             Add New Note
                         </button>
                     </div>

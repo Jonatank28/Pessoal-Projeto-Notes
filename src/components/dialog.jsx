@@ -1,6 +1,17 @@
 import { useEffect, useRef } from 'react'
 
-const Modal = ({ isOpen, onClose, children, title }) => {
+const Modal = ({
+    isOpen,
+    onClose,
+    onSubmit,
+    children,
+    title,
+    DivClass,
+    btn1Class,
+    btn1Text,
+    btn2Class,
+    btn2Text,
+}) => {
     const modalRef = useRef(null)
 
     // Faz com que o foco do teclado fique dentro do modal
@@ -53,29 +64,53 @@ const Modal = ({ isOpen, onClose, children, title }) => {
                         className="flex items-center justify-center min-h-screen "
                         style={{ zIndex: '501' }}
                     >
-                        <div className="bg-hover rounded-lg w-11/12 md:w-[400px] p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-bold">{title}</h2>
-                                <button onClick={onClose}>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
-                                </button>
+                        <div className="bg-hover rounded-lg w-11/12 md:w-[400px]">
+                            {/* Cabeçalho do modal */}
+                            <div className="px-4 pt-2 pb-1 bg-primary rounded-t-lg">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h2 className="text-primary text-xl font-bold">
+                                        {title}
+                                    </h2>
+                                    <button onClick={onClose}>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-6 w-6 text-secondary"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                            {children}
-                            <button onClick={onClose}>Fechar</button>
+                            <div className="p-4">
+                                {/* Conteudo do modal */}
+                                {children}
+                                {/* Botões de ação do modal */}
+                                <div className={DivClass}>
+                                    <button
+                                        type="button"
+                                        onClick={onClose}
+                                        className={btn1Class}
+                                    >
+                                        {btn1Text}
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        onClick={onSubmit}
+                                        className={btn2Class}
+                                    >
+                                        {btn2Text}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

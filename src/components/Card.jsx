@@ -3,6 +3,7 @@ import Modal from './dialog'
 
 const Card = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [note, setNote] = useState({})
     const [notes, setNotes] = useState([
         {
             id: 1,
@@ -61,14 +62,25 @@ const Card = () => {
         },
     ])
 
+    // Função que abre o modal
     const openModal = (note) => {
         setIsModalOpen(true)
+        setNote(note)
         console.log(note)
     }
 
+    // Função que fecha o modal
     const closeModal = () => {
         setIsModalOpen(false)
     }
+
+    // Função que deleta a nota
+    const deleteNote = (note) => {
+        const id = note.id
+        setNotes(notes.filter((note) => note.id !== id))
+        closeModal()
+    }
+
     return (
         // Div do card
         <>
@@ -224,12 +236,20 @@ const Card = () => {
                 </div>
             ))}
             {/* Modal de exclusão */}
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Natus eos quis dolorum assumenda ratione porro a velit
-                    doloremque dolores aperiam deleniti architecto maxime veniam
-                    at, molestiae quibusdam unde soluta. Eveniet?
+            <Modal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onSubmit={() => deleteNote(note)}
+                title="Excluir nota"
+                DivClass="mt-6 flex justify-between items-center"
+                btn1Text="Cancelar"
+                btn1Class="btn btn-danger-outline"
+                btn2Text="Excluir"
+                btn2Class="btn btn-primary"
+            >
+                <p className="">
+                    Tem certeza que deseja excluir a nota
+                    <span className="font-bold"> {note.title}</span>?
                 </p>
             </Modal>
         </>
