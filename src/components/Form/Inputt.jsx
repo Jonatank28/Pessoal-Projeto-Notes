@@ -1,6 +1,6 @@
 import { Field, ErrorMessage } from 'formik'
 
-const Inputt = ({ id, type, name, placeholder, ...props }) => {
+const Inputt = ({ id, type, name, placeholder, value, ...props }) => {
     return (
         <>
             <div className="mb-4  py-2 ">
@@ -9,6 +9,7 @@ const Inputt = ({ id, type, name, placeholder, ...props }) => {
                     id={id}
                     type={type}
                     name={name}
+                    value={value}
                     placeholder={placeholder}
                     {...props}
                 />

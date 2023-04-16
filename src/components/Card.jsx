@@ -1,25 +1,39 @@
 import { useState, useContext, useEffect, useRef } from 'react'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import { v4 as uuidv4 } from 'uuid'
+import SelectField from '@/components/Form/Select'
 import Modal from './dialog'
 import { NotesContext } from '../contexts/notesContext'
-import { FaEllipsisH } from 'react-icons/fa'
+import {
+    FaEllipsisH,
+    FaPencilAlt,
+    FaRegTrashAlt,
+    FaRegEye,
+} from 'react-icons/fa'
+import Inputt from './Form/Inputt'
 
 const menuData = [
     {
         id: 1,
         title: 'Editar',
+        icon: FaPencilAlt,
     },
 
     {
         id: 2,
         title: 'Excluir',
+        icon: FaRegTrashAlt,
     },
     {
         id: 3,
         title: 'Visualizar',
+        icon: FaRegEye,
     },
 ]
 
 const Card = () => {
+    // State que abre e fecha o modal de excluir a nota
     const [isModalOpen, setIsModalOpen] = useState(false)
     // Menu que abre ao clicar no icone de tag
     const [isOpenTag, setIsOpenTag] = useState(false)
@@ -27,23 +41,23 @@ const Card = () => {
     const [isOpenMenuCard, setIsOpenMenuCard] = useState(false)
     // Para saber qual tag foi selecionada
     const [selectedTagId, setSelectedTagId] = useState(null)
-
     // State que armazena a nota que está sendo editada
     const [selectedNoteId, setSelectedNoteId] = useState(null)
-
+    // Abrir e fechar o modal de editar a nota
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+    // State que armazena a nota selecionada
     const [note, setNote] = useState({})
     const { notes, setNotes, dataTags } = useContext(NotesContext)
     const refDivTags = useRef(null)
     const refDivMenuCard = useRef(null)
 
-    // Função que abre o modal
+    // Função que abre o modal Excluir
     const openModal = (note) => {
         setIsModalOpen(true)
         setNote(note)
-        console.log(note)
     }
 
-    // Função que fecha o modal
+    // Função que fecha o modal Excluir
     const closeModal = () => {
         setIsModalOpen(false)
     }
@@ -56,7 +70,7 @@ const Card = () => {
         closeModal()
     }
 
-    // Função menu  da tag clicada
+    // Função que abre menu da tag clicada
     const toggleMenuTag = (tagId, note) => {
         if (selectedTagId === tagId) {
             setIsOpenTag(!isOpenTag)
@@ -65,14 +79,10 @@ const Card = () => {
         }
         setSelectedTagId(tagId)
         setNote(note)
-        console.log(note)
     }
 
     // Atualiza a tag da nota no localStorage e no state do contexto de notas
     const NewTagSelected = (tagId) => {
-        console.log('note', selectedTagId)
-        console.log('selecionada', tagId)
-
         const tags =
             tagId.title == 'Pessoal'
                 ? 'pessoal'
@@ -87,14 +97,12 @@ const Card = () => {
             }
             return n
         })
-        console.log(newNotes)
         localStorage.setItem('notes', JSON.stringify(newNotes))
         setNotes(newNotes)
         setIsOpenTag(false)
     }
 
     // Função que abre menu de edição do card
-
     const toggleMenuCard = (note) => {
         let id = note.id
 
@@ -106,12 +114,58 @@ const Card = () => {
 
         setSelectedNoteId(id)
         setNote(note)
-        console.log(note)
-
-        console.log(selectedNoteId)
     }
 
-    // Função que fecha o menu de tags ao clicar fora dele
+    // Função que verifica qual opção do menu do card foi selecionada e faz a ação correspondente
+    const handleMenuCard = (note, id) => {
+        if (id === 1) {
+            openModalEdit(note)
+        } else if (id === 2) {
+            setIsModalOpen(true)
+        } else {
+            console.log('visualizar')
+        }
+        console.log(note)
+        console.log(id)
+    }
+
+    const initialValues = {
+        title: note.title,
+        content: note.content,
+        tag: note.tag,
+    }
+
+    const editNoteSchema = Yup.object().shape({
+        title: Yup.string().required('Obrigatório'),
+        content: Yup.string().required('Obrigatório'),
+        tag: Yup.string().required('Obrigatório'),
+    })
+
+    // Função que abre o modal de editar a nota
+    const openModalEdit = (note) => {
+        setIsModalEditOpen(true)
+        setNote(note)
+    }
+
+    // Função que fecha o modal de editar a nota
+    const closeModalEdit = () => {
+        setIsModalEditOpen(false)
+    }
+
+    // Função que edita a nota no localStorage e no state do contexto de notas
+    const editNoteSubmit = (values) => {
+        const newNotes = notes.map((n) => {
+            if (n.id === note.id) {
+                return { ...n, ...values }
+            }
+            return n
+        })
+        localStorage.setItem('notes', JSON.stringify(newNotes))
+        setNotes(newNotes)
+        closeModalEdit()
+    }
+
+    // Função que fecha o menu de tags ou o de Card ao clicar fora dele
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -196,12 +250,21 @@ const Card = () => {
                             {/* Menu de opções do card*/}
                             {isOpenMenuCard && selectedNoteId == note.id && (
                                 <div
-                                    className="absolute bg-secondary  top-6 rigght-0 rounded-md shadow-md"
+                                    className="absolute bg-secondary top-5 right-3 rounded-md shadow-md flex flex-col gap-1 py-2"
                                     ref={refDivMenuCard}
                                 >
                                     {menuData.map((menu, index) => (
-                                        <div>
-                                            <p>{menu.title}</p>
+                                        <div
+                                            onClick={() =>
+                                                handleMenuCard(note, menu.id)
+                                            }
+                                            key={index}
+                                            className="hover:bg-hover flex gap-2 items-center px-2 py-1"
+                                        >
+                                            <menu.icon className="h-3 w-3" />
+                                            <p className="text-primary text-sm">
+                                                {menu.title}
+                                            </p>
                                         </div>
                                     ))}
                                 </div>
@@ -389,6 +452,83 @@ const Card = () => {
                     Tem certeza que deseja excluir a nota
                     <span className="font-bold"> {note.title}</span>?
                 </p>
+            </Modal>
+
+            {/* Modal de edição */}
+            <Modal
+                isOpen={isModalEditOpen}
+                onClose={closeModalEdit}
+                onSubmitModal={{}}
+                title="Editar nota"
+            >
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={editNoteSchema}
+                    onSubmit={editNoteSubmit}
+                >
+                    <Form>
+                        <div className="flex flex-col  mt-10">
+                            <div className="flex flex-col">
+                                <Inputt
+                                    id="title"
+                                    type="text"
+                                    name="title"
+                                    defaultValue={note.title}
+                                    label="Título"
+                                    placeholder="Título da nota"
+                                />
+                                <SelectField
+                                    name="tag"
+                                    // label="Tag"
+                                    options={[
+                                        {
+                                            label: 'sem tag',
+                                            value: 'sem tag',
+                                        },
+                                        {
+                                            label: 'Pessoal',
+                                            value: 'pessoal',
+                                        },
+                                        {
+                                            label: 'Trabalho',
+                                            value: 'trabalho',
+                                        },
+                                        {
+                                            label: 'Social',
+                                            value: 'social',
+                                        },
+                                        {
+                                            label: 'Importante',
+                                            value: 'important',
+                                        },
+                                    ]}
+                                />
+
+                                <Inputt
+                                    id="content"
+                                    as="textarea"
+                                    rows="4"
+                                    name="content"
+                                    defaultValue={note.content}
+                                    label="Descrição"
+                                    placeholder="Descrição da nota"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-2 items-center mt-6">
+                            <button
+                                type="button"
+                                onClick={closeModalEdit}
+                                className="btn btn-danger-outline"
+                            >
+                                Cancelar
+                            </button>
+                            <button type="submit" className="btn btn-primary">
+                                Adicionar nota
+                            </button>
+                        </div>
+                    </Form>
+                </Formik>
             </Modal>
         </>
     )

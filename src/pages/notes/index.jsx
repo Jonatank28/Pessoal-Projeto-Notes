@@ -259,13 +259,6 @@ const Notes = () => {
                                             label="Título"
                                             placeholder="Título da nota"
                                         />
-                                        {/* <Inputt
-                                            id="tag"
-                                            type="text"
-                                            name="tag"
-                                            label="Tag"
-                                            placeholder="Tag da nota"
-                                        /> */}
                                         <SelectField
                                             name="tag"
                                             // label="Tag"

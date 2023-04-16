@@ -49,7 +49,7 @@ const Modal = ({
     return (
         <>
             {/* Overlay do modal */}
-            {isOpen && <div className="overlay" onClick={onClose}></div>}
+            {isOpen && <div className="overlay"></div>}
             {/* Modal */}
             {isOpen && (
                 <div
