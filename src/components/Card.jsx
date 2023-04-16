@@ -45,6 +45,8 @@ const Card = () => {
     const [selectedNoteId, setSelectedNoteId] = useState(null)
     // Abrir e fechar o modal de editar a nota
     const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+    // Abre modal que mostra a nota selecionada
+    const [isModalViewOpen, setIsModalViewOpen] = useState(false)
     // State que armazena a nota selecionada
     const [note, setNote] = useState({})
     const { notes, setNotes, dataTags } = useContext(NotesContext)
