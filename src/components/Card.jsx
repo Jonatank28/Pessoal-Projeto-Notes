@@ -176,6 +176,18 @@ const Card = () => {
         closeModalEdit()
     }
 
+    // Função que favorita a nota
+    const HandleIconFarorite = (note) => {
+        const newNotes = notes.map((n) => {
+            if (n.id === note.id) {
+                return { ...n, favorite: !note.favorite }
+            }
+            return n
+        })
+        localStorage.setItem('notes', JSON.stringify(newNotes))
+        setNotes(newNotes)
+    }
+
     // Função que fecha o menu de tags ou o de Card ao clicar fora dele
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -428,12 +440,17 @@ const Card = () => {
                                 </button>
                             </div>
                             {/* // Icone favorito */}
-                            <div className="cursor-pointer">
+                            <div
+                                className="cursor-pointer"
+                                onClick={() => HandleIconFarorite(note)}
+                            >
                                 <svg
                                     width="20"
                                     height="20"
                                     viewBox="0 0 24 24"
-                                    className="text-yellow-400 fill-primary hover:fill-yellow-400 active:animate-bounce "
+                                    className={`text-yellow-400 fill-primary hover:fill-yellow-400 active:animate-bounce ${
+                                        note.favorite ? 'fill-yellow-400' : ''
+                                    }`}
                                     xmlns="http://www.w3.org/2000/svg"
                                 >
                                     <path

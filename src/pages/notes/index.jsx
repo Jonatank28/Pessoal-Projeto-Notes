@@ -12,14 +12,15 @@ const Notes = () => {
     const [isOpen, setIsOpen] = useState(false)
     const { notes, setNotes, dataTags, dataLinks } = useContext(NotesContext)
 
+    // Seta que o link selecionado por padrão é o primeiro do array
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
     )
 
+    // Seta que a tag selecionada por padrão é a primeira do array
     const [selectedTags, setSelectedTags] = useState(
-        dataTags.findIndex((tag) => tag.id === 1)
+        dataTags.findIndex((tag) => tag.id === 0)
     )
-
     const [hoverLinks, setHoverLinks] = useState(-1)
     const [hoverTags, setHoverTags] = useState(-1)
 

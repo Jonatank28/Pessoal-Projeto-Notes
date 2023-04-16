@@ -9,6 +9,10 @@ const NotesProvider = ({ children }) => {
 
     const dataTags = [
         {
+            id: 0,
+            title: 'Todas as tags',
+        },
+        {
             id: 1,
             title: 'Pessoal',
         },
