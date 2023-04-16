@@ -1,16 +1,40 @@
-import { useState, useContext, useEffect, useRef, use } from 'react'
+import { useState, useContext, useEffect, useRef } from 'react'
 import Modal from './dialog'
 import { NotesContext } from '../contexts/notesContext'
+import { FaEllipsisH } from 'react-icons/fa'
+
+const menuData = [
+    {
+        id: 1,
+        title: 'Editar',
+    },
+
+    {
+        id: 2,
+        title: 'Excluir',
+    },
+    {
+        id: 3,
+        title: 'Visualizar',
+    },
+]
 
 const Card = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     // Menu que abre ao clicar no icone de tag
     const [isOpenTag, setIsOpenTag] = useState(false)
+    // Menu que abre o menu do card ao clicar no icone de 3 pontinhos
+    const [isOpenMenuCard, setIsOpenMenuCard] = useState(false)
     // Para saber qual tag foi selecionada
     const [selectedTagId, setSelectedTagId] = useState(null)
+
+    // State que armazena a nota que está sendo editada
+    const [selectedNoteId, setSelectedNoteId] = useState(null)
+
     const [note, setNote] = useState({})
     const { notes, setNotes, dataTags } = useContext(NotesContext)
-    const refDiv = useRef(null)
+    const refDivTags = useRef(null)
+    const refDivMenuCard = useRef(null)
 
     // Função que abre o modal
     const openModal = (note) => {
@@ -32,7 +56,7 @@ const Card = () => {
         closeModal()
     }
 
-    // Função que altera o estado da nota so abre da tag clicada
+    // Função menu  da tag clicada
     const toggleMenuTag = (tagId, note) => {
         if (selectedTagId === tagId) {
             setIsOpenTag(!isOpenTag)
@@ -44,11 +68,11 @@ const Card = () => {
         console.log(note)
     }
 
+    // Atualiza a tag da nota no localStorage e no state do contexto de notas
     const NewTagSelected = (tagId) => {
         console.log('note', selectedTagId)
         console.log('selecionada', tagId)
 
-        // Atualizar a tag da nota no localStorage e no state do contexto de notas
         const tags =
             tagId.title == 'Pessoal'
                 ? 'pessoal'
@@ -69,12 +93,41 @@ const Card = () => {
         setIsOpenTag(false)
     }
 
+    // Função que abre menu de edição do card
+
+    const toggleMenuCard = (note) => {
+        let id = note.id
+
+        if (note.id === selectedNoteId) {
+            setIsOpenMenuCard(!isOpenMenuCard)
+        } else {
+            setIsOpenMenuCard(true)
+        }
+
+        setSelectedNoteId(id)
+        setNote(note)
+        console.log(note)
+
+        console.log(selectedNoteId)
+    }
+
     // Função que fecha o menu de tags ao clicar fora dele
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (refDiv.current && !refDiv.current.contains(event.target)) {
+            if (
+                refDivTags.current &&
+                !refDivTags.current.contains(event.target)
+            ) {
                 setIsOpenTag(false)
                 setSelectedTagId(null)
+                setNote({})
+            }
+            if (
+                refDivMenuCard.current &&
+                !refDivMenuCard.current.contains(event.target)
+            ) {
+                setIsOpenMenuCard(false)
+                setSelectedNoteId(null)
                 setNote({})
             }
         }
@@ -134,9 +187,25 @@ const Card = () => {
                                 </p>
                             </div>
                         </div>
-                        {/* Abre menu de opções ao clicar */}
-                        <div>
-                            <p>Menu aki</p>
+                        {/* Abre menu de opções do ao clicar */}
+                        <div
+                            className="cursor-pointer relative"
+                            onClick={() => toggleMenuCard(note)}
+                        >
+                            <FaEllipsisH className="rotate-90" />
+                            {/* Menu de opções do card*/}
+                            {isOpenMenuCard && selectedNoteId == note.id && (
+                                <div
+                                    className="absolute bg-secondary  top-6 rigght-0 rounded-md shadow-md"
+                                    ref={refDivMenuCard}
+                                >
+                                    {menuData.map((menu, index) => (
+                                        <div>
+                                            <p>{menu.title}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* Footer */}
@@ -172,11 +241,11 @@ const Card = () => {
                             {isOpenTag && selectedTagId === note.id && (
                                 <div
                                     className="absolute bg-secondary  top-6 rigght-0 rounded-md shadow-md "
-                                    ref={refDiv}
+                                    ref={refDivTags}
                                 >
                                     {dataTags.map((tag, index) => (
                                         <div
-                                            className="flex items-center gap-2 hover:bg-primary hover:rounded-md p-2"
+                                            className="flex items-center gap-2 hover:bg-hover hover:rounded-md p-2"
                                             onClick={() => NewTagSelected(tag)}
                                         >
                                             <div>
