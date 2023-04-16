@@ -1,9 +1,13 @@
 import Card from '@/components/Card'
 import { CgNotes } from 'react-icons/cg'
 import { FaRegStar } from 'react-icons/fa'
-import { useState } from 'react'
+import { useState, useRef, useContext, useEffect } from 'react'
 import Modal from '@/components/dialog'
-import NewNoteForm from '@/components/NewNoteForm'
+import Inputt from '@/components/Form/Inputt'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import { NotesContext } from '../../contexts/notesContext'
+import { v4 as uuidv4 } from 'uuid'
 
 const dataLinks = [
     {
@@ -41,6 +45,7 @@ const dataTags = [
 
 const Notes = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { notes, setNotes } = useContext(NotesContext)
 
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
@@ -70,6 +75,45 @@ const Notes = () => {
     const handleCloseModal = () => {
         setIsOpen(false)
     }
+
+    const initialValues = {
+        title: '',
+        content: '',
+        tag: '',
+    }
+
+    //  Valida os campos do formulário
+    const NewNoteFormSchema = Yup.object().shape({
+        title: Yup.string().required('Obrigatório'),
+        content: Yup.string().required('Obrigatório'),
+        tag: Yup.string().required('Obrigatório'),
+    })
+
+    const handleFormSubmit = (values) => {
+        let newNote = {
+            ...values,
+            id: uuidv4(),
+            name: 'Jonatan',
+            src: 'https://github.com/Jonatank28.png',
+            alt: 'Foto perfil Github',
+            date: new Date().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            }),
+        }
+        setNotes([...notes, newNote])
+        localStorage.setItem('notes', JSON.stringify([...notes, newNote]))
+
+        setIsOpen(false)
+    }
+
+    useEffect(() => {
+        const storedNotes = JSON.parse(localStorage.getItem('notes'))
+        if (storedNotes) {
+            setNotes(storedNotes)
+        }
+    }, [])
 
     return (
         <main className="bg-primary w-screen h-screen flex items-center justify-center">
@@ -231,13 +275,57 @@ const Notes = () => {
                         isOpen={isOpen}
                         onClose={handleCloseModal}
                         title="Criar nova nota"
-                        DivClass="flex justify-end gap-2 items-center mt-6"
-                        btn1Class="btn btn-danger-outline"
-                        btn1Text="Cancelar"
-                        btn2Class="btn btn-primary"
-                        btn2Text="Adicionar nota"
+                        onSubmit={handleFormSubmit}
                     >
-                        <NewNoteForm />
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={NewNoteFormSchema}
+                            onSubmit={handleFormSubmit}
+                        >
+                            <Form>
+                                <div className="flex flex-col  mt-10">
+                                    <div className="flex flex-col">
+                                        <Inputt
+                                            id="title"
+                                            type="text"
+                                            name="title"
+                                            label="Título"
+                                            placeholder="Título da nota"
+                                        />
+                                        <Inputt
+                                            id="tag"
+                                            type="text"
+                                            name="tag"
+                                            label="Tag"
+                                            placeholder="Tag da nota"
+                                        />
+                                        <Inputt
+                                            id="content"
+                                            as="textarea"
+                                            rows="4"
+                                            name="content"
+                                            label="Descrição"
+                                            placeholder="Descrição da nota"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex justify-end gap-2 items-center mt-6">
+                                    <button
+                                        type="button"
+                                        onClick={handleCloseModal}
+                                        className="btn btn-danger-outline"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                    >
+                                        Adicionar nota
+                                    </button>
+                                </div>
+                            </Form>
+                        </Formik>
                     </Modal>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 const Modal = ({
     isOpen,
     onClose,
-    onSubmit,
+    onSubmitModal,
     children,
     title,
     DivClass,
@@ -104,7 +104,7 @@ const Modal = ({
                                     </button>
                                     <button
                                         type="submit"
-                                        onClick={onSubmit}
+                                        onClick={onSubmitModal}
                                         className={btn2Class}
                                     >
                                         {btn2Text}

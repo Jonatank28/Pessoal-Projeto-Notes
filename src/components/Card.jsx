@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import Modal from './dialog'
 import { NotesContext } from '../contexts/notesContext'
 
@@ -19,10 +19,11 @@ const Card = () => {
         setIsModalOpen(false)
     }
 
-    // Função que deleta a nota
+    // Função que deleta a nota do card e do localStorage
     const deleteNote = (note) => {
-        const id = note.id
-        setNotes(notes.filter((note) => note.id !== id))
+        const filteredNotes = notes.filter((n) => n.id !== note.id)
+        setNotes(filteredNotes)
+        localStorage.setItem('notes', JSON.stringify(filteredNotes))
         closeModal()
     }
 
@@ -184,7 +185,7 @@ const Card = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                onSubmit={() => deleteNote(note)}
+                onSubmitModal={() => deleteNote(note)}
                 title="Excluir nota"
                 DivClass="mt-6 flex justify-between items-center"
                 btn1Text="Cancelar"
