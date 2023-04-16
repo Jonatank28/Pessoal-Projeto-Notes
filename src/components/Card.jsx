@@ -1,11 +1,16 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useRef, use } from 'react'
 import Modal from './dialog'
 import { NotesContext } from '../contexts/notesContext'
 
 const Card = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    // Menu que abre ao clicar no icone de tag
+    const [isOpenTag, setIsOpenTag] = useState(false)
+    // Para saber qual tag foi selecionada
+    const [selectedTagId, setSelectedTagId] = useState(null)
     const [note, setNote] = useState({})
-    const { notes, setNotes } = useContext(NotesContext)
+    const { notes, setNotes, dataTags } = useContext(NotesContext)
+    const refDiv = useRef(null)
 
     // Função que abre o modal
     const openModal = (note) => {
@@ -26,6 +31,58 @@ const Card = () => {
         localStorage.setItem('notes', JSON.stringify(filteredNotes))
         closeModal()
     }
+
+    // Função que altera o estado da nota so abre da tag clicada
+    const toggleMenuTag = (tagId, note) => {
+        if (selectedTagId === tagId) {
+            setIsOpenTag(!isOpenTag)
+        } else {
+            setIsOpenTag(true)
+        }
+        setSelectedTagId(tagId)
+        setNote(note)
+        console.log(note)
+    }
+
+    const NewTagSelected = (tagId) => {
+        console.log('note', selectedTagId)
+        console.log('selecionada', tagId)
+
+        // Atualizar a tag da nota no localStorage e no state do contexto de notas
+        const tags =
+            tagId.title == 'Pessoal'
+                ? 'pessoal'
+                : tagId.title == 'Trabalho'
+                ? 'trabalho'
+                : tagId.title == 'Social'
+                ? 'social'
+                : 'important'
+        const newNotes = notes.map((n) => {
+            if (n.id === note.id) {
+                return { ...n, tag: tags }
+            }
+            return n
+        })
+        console.log(newNotes)
+        localStorage.setItem('notes', JSON.stringify(newNotes))
+        setNotes(newNotes)
+        setIsOpenTag(false)
+    }
+
+    // Função que fecha o menu de tags ao clicar fora dele
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (refDiv.current && !refDiv.current.contains(event.target)) {
+                setIsOpenTag(false)
+                setSelectedTagId(null)
+                setNote({})
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
 
     return (
         // Div do card
@@ -84,8 +141,11 @@ const Card = () => {
                     </div>
                     {/* Footer */}
                     <div className="flex justify-between mt-4">
-                        <div className="cursor-pointer p-1">
+                        <div className="cursor-pointer p-1 relative">
+                            {/* Icone de tag */}
+
                             <svg
+                                onClick={() => toggleMenuTag(note.id, note)}
                                 width="24"
                                 height="24"
                                 viewBox="0 0 24 24"
@@ -109,6 +169,69 @@ const Card = () => {
                                     strokeWidth="1.5"
                                 ></path>
                             </svg>
+                            {isOpenTag && selectedTagId === note.id && (
+                                <div
+                                    className="absolute bg-secondary  top-6 rigght-0 rounded-md shadow-md "
+                                    ref={refDiv}
+                                >
+                                    {dataTags.map((tag, index) => (
+                                        <div
+                                            className="flex items-center gap-2 hover:bg-primary hover:rounded-md p-2"
+                                            onClick={() => NewTagSelected(tag)}
+                                        >
+                                            <div>
+                                                <svg
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className={`h-3 w-3 rotate-45 ${
+                                                        tag.title === 'Pessoal'
+                                                            ? 'fill-pessoal'
+                                                            : tag.title ===
+                                                              'Trabalho'
+                                                            ? 'fill-trabalho'
+                                                            : tag.title ===
+                                                              'Social'
+                                                            ? 'fill-social'
+                                                            : tag.title ===
+                                                              'Importante'
+                                                            ? 'fill-important'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    <path
+                                                        d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.5"
+                                                    ></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <span
+                                                    className={` text-sm ${
+                                                        tag.title === 'Pessoal'
+                                                            ? 'fill-pessoal'
+                                                            : tag.title ===
+                                                              'Trabalho'
+                                                            ? 'fill-trabalho'
+                                                            : tag.title ===
+                                                              'Social'
+                                                            ? 'fill-social'
+                                                            : tag.title ===
+                                                              'Importante'
+                                                            ? 'fill-important'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    {tag.title}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             {/* Icone de lixeira para deletar */}

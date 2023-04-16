@@ -1,6 +1,4 @@
 import Card from '@/components/Card'
-import { CgNotes } from 'react-icons/cg'
-import { FaRegStar } from 'react-icons/fa'
 import { useState, useRef, useContext, useEffect } from 'react'
 import Modal from '@/components/dialog'
 import Inputt from '@/components/Form/Inputt'
@@ -10,43 +8,9 @@ import { NotesContext } from '../../contexts/notesContext'
 import { v4 as uuidv4 } from 'uuid'
 import SelectField from '@/components/Form/Select'
 
-const dataLinks = [
-    {
-        id: 1,
-        title: 'Todas as notas',
-        icon: CgNotes,
-        url: 'https://www.notion.so/Notas-1b1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e',
-    },
-    {
-        id: 2,
-        title: 'Favoritas',
-        icon: FaRegStar,
-        url: 'https://www.notion.so/Anotacoes-1b1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e',
-    },
-]
-
-const dataTags = [
-    {
-        id: 1,
-        title: 'Pessoal',
-    },
-    {
-        id: 2,
-        title: 'Trabalho',
-    },
-    {
-        id: 3,
-        title: 'Social',
-    },
-    {
-        id: 4,
-        title: 'Importante',
-    },
-]
-
 const Notes = () => {
     const [isOpen, setIsOpen] = useState(false)
-    const { notes, setNotes } = useContext(NotesContext)
+    const { notes, setNotes, dataTags, dataLinks } = useContext(NotesContext)
 
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
