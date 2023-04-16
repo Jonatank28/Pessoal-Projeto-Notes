@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, useRef } from 'react'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { v4 as uuidv4 } from 'uuid'
 import SelectField from '@/components/Form/Select'
 import Modal from './dialog'
 import { NotesContext } from '../contexts/notesContext'
@@ -45,7 +44,7 @@ const Card = () => {
     const [selectedNoteId, setSelectedNoteId] = useState(null)
     // Abrir e fechar o modal de editar a nota
     const [isModalEditOpen, setIsModalEditOpen] = useState(false)
-    // Abre modal que mostra a nota selecionada
+    // Abre modal para visualizar a nota completa
     const [isModalViewOpen, setIsModalViewOpen] = useState(false)
     // State que armazena a nota selecionada
     const [note, setNote] = useState({})
@@ -125,10 +124,20 @@ const Card = () => {
         } else if (id === 2) {
             setIsModalOpen(true)
         } else {
-            console.log('visualizar')
+            openModalView(note)
         }
+    }
+
+    // Função que abre o modal de visualizar a nota // id do link clicado = 3
+    const openModalView = (note) => {
+        setIsModalViewOpen(true)
+        setNote(note)
         console.log(note)
-        console.log(id)
+    }
+
+    // Função que fecha o modal de visualizar a nota // id do link clicado = 3
+    const closeModalView = () => {
+        setIsModalViewOpen(false)
     }
 
     const initialValues = {
@@ -143,13 +152,13 @@ const Card = () => {
         tag: Yup.string().required('Obrigatório'),
     })
 
-    // Função que abre o modal de editar a nota
+    // Função que abre o modal de editar a nota // id do link clicado = 1
     const openModalEdit = (note) => {
         setIsModalEditOpen(true)
         setNote(note)
     }
 
-    // Função que fecha o modal de editar a nota
+    // Função que fecha o modal de editar a nota // id do link clicado = 1
     const closeModalEdit = () => {
         setIsModalEditOpen(false)
     }
@@ -372,7 +381,7 @@ const Card = () => {
                             <div className="flex items-center">
                                 <button
                                     type="button"
-                                    class="text-red-400"
+                                    className="text-red-400"
                                     onClick={() => openModal(note)}
                                 >
                                     <svg
@@ -381,7 +390,7 @@ const Card = () => {
                                         viewBox="0 0 24 24"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        class="h-5 w-5"
+                                        className="h-5 w-5"
                                     >
                                         <path
                                             d="M20.5001 6H3.5"
@@ -531,6 +540,37 @@ const Card = () => {
                         </div>
                     </Form>
                 </Formik>
+            </Modal>
+            {/* Modal de visualização */}
+            <Modal
+                isOpen={isModalViewOpen}
+                onClose={closeModalView}
+                onSubmitModal={{}}
+                title="Visualizar nota"
+                className="border border-red-300"
+            >
+                <div className="flex items-center gap-2">
+                    <p className="text-sm text-gray-500">{note.date}</p>
+                    <p
+                        className={` capitalize
+                            ${
+                                note.tag === 'pessoal'
+                                    ? 'fill-pessoal-view'
+                                    : note.tag === 'trabalho'
+                                    ? 'fill-trabalho'
+                                    : note.tag === 'social'
+                                    ? 'fill-social'
+                                    : note.tag === 'important'
+                                    ? 'fill-important'
+                                    : ''
+                            }
+                        `}
+                    >
+                        {note.tag == 'important' ? 'Importante' : note.tag}
+                    </p>
+                </div>
+                <h1 className=" mt-2 text-lg font-bold">{note.title}</h1>
+                <p className="mt-4 text-sm ">{note.content}</p>
             </Modal>
         </>
     )

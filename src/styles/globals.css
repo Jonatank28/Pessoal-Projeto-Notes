@@ -76,6 +76,13 @@
     color: #2563eb;
 }
 
+.fill-pessoal-view {
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    padding: 2px 4px;
+
+}
+
 .fill-trabalho {
     fill: #10b981;
     color: #10b981;

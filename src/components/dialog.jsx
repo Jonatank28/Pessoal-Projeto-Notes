@@ -61,13 +61,13 @@ const Modal = ({
                     onKeyDown={handleTabKey}
                 >
                     <div
-                        className="flex items-center justify-center min-h-screen "
+                        className="flex items-center justify-center min-h-screen relative "
                         style={{ zIndex: '501' }}
                     >
-                        <div className="bg-hover rounded-lg w-11/12 md:w-[400px]">
+                        <div className="bg-hover rounded-lg w-11/12 md:w-[400px] relative ">
                             {/* Cabeçalho do modal */}
-                            <div className="px-4 pt-2 pb-1 bg-primary rounded-t-lg">
-                                <div className="flex items-center justify-between mb-4">
+                            <div className="px-4 pt-2 pb-1 bg-primary rounded-t-lg ">
+                                <div className="flex items-center justify-between mb-4 ">
                                     <h2 className="text-primary text-xl font-bold">
                                         {title}
                                     </h2>
