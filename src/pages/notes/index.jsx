@@ -8,6 +8,7 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { NotesContext } from '../../contexts/notesContext'
 import { v4 as uuidv4 } from 'uuid'
+import SelectField from '@/components/Form/Select'
 
 const dataLinks = [
     {
@@ -79,7 +80,7 @@ const Notes = () => {
     const initialValues = {
         title: '',
         content: '',
-        tag: '',
+        tag: 'sem tag',
     }
 
     //  Valida os campos do formulário
@@ -102,6 +103,8 @@ const Notes = () => {
                 year: 'numeric',
             }),
         }
+
+        console.log(newNote)
         setNotes([...notes, newNote])
         localStorage.setItem('notes', JSON.stringify([...notes, newNote]))
 
@@ -292,13 +295,40 @@ const Notes = () => {
                                             label="Título"
                                             placeholder="Título da nota"
                                         />
-                                        <Inputt
+                                        {/* <Inputt
                                             id="tag"
                                             type="text"
                                             name="tag"
                                             label="Tag"
                                             placeholder="Tag da nota"
+                                        /> */}
+                                        <SelectField
+                                            name="tag"
+                                            // label="Tag"
+                                            options={[
+                                                {
+                                                    label: 'sem tag',
+                                                    value: 'sem tag',
+                                                },
+                                                {
+                                                    label: 'Pessoal',
+                                                    value: 'pessoal',
+                                                },
+                                                {
+                                                    label: 'Trabalho',
+                                                    value: 'trabalho',
+                                                },
+                                                {
+                                                    label: 'Social',
+                                                    value: 'social',
+                                                },
+                                                {
+                                                    label: 'Importante',
+                                                    value: 'important',
+                                                },
+                                            ]}
                                         />
+
                                         <Inputt
                                             id="content"
                                             as="textarea"

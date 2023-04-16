@@ -3,7 +3,7 @@ import { Field, ErrorMessage } from 'formik'
 const Inputt = ({ id, type, name, placeholder, ...props }) => {
     return (
         <>
-            <div className="mb-4 flex flex-col items-center py-2 ">
+            <div className="mb-4  py-2 ">
                 <Field
                     className="appearance-none bg-secondary border-none w-full text-primary mr-3 p-2 leading-tight focus:outline-none rounded-md "
                     id={id}
