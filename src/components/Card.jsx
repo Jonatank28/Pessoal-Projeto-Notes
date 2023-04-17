@@ -80,6 +80,7 @@ const Card = () => {
         }
         setSelectedTagId(tagId)
         setNote(note)
+        console.log(note)
     }
 
     // Atualiza a tag da nota no localStorage e no state do contexto de notas
@@ -91,7 +92,11 @@ const Card = () => {
                 ? 'trabalho'
                 : tagId.title == 'Social'
                 ? 'social'
-                : 'important'
+                : tagId.title == 'Importante'
+                ? 'important'
+                : tagId.title == 'Todas as tags'
+                ? 'sem tag'
+                : ''
         const newNotes = notes.map((n) => {
             if (n.id === note.id) {
                 return { ...n, tag: tags }
@@ -228,6 +233,8 @@ const Card = () => {
                             ? 'shadow-yellow-300 dark:shadow-yellow-300'
                             : note.tag === 'important'
                             ? 'shadow-red-300 dark:shadow-red-300'
+                            : note.tag === 'Todas as tags'
+                            ? 'shadow-gray-300 dark:shadow-gray-300'
                             : ''
                     }`}
                 >
@@ -315,6 +322,8 @@ const Card = () => {
                                         ? 'fill-social'
                                         : note.tag === 'important'
                                         ? 'fill-important'
+                                        : note.tag === 'Todas as tags'
+                                        ? 'shadow-gray-300 dark:shadow-gray-300'
                                         : ''
                                 }`}
                             >
@@ -380,7 +389,10 @@ const Card = () => {
                                                             : ''
                                                     }`}
                                                 >
-                                                    {tag.title}
+                                                    {tag.title ===
+                                                    'Todas as tags'
+                                                        ? 'Sem tag'
+                                                        : tag.title}
                                                 </span>
                                             </div>
                                         </div>

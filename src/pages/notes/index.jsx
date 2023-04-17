@@ -9,25 +9,26 @@ import { v4 as uuidv4 } from 'uuid'
 import SelectField from '@/components/Form/Select'
 
 const Notes = () => {
+    // Seta que o modal está fechado por padrão
     const [isOpen, setIsOpen] = useState(false)
+    // Pega os dados do contexto
     const { notes, setNotes, dataTags, dataLinks } = useContext(NotesContext)
-
     // Seta que o link selecionado por padrão é o primeiro do array
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
     )
-
     // Seta que a tag selecionada por padrão é a primeira do array
     const [selectedTags, setSelectedTags] = useState(
         dataTags.findIndex((tag) => tag.id === 0)
     )
     const [hoverLinks, setHoverLinks] = useState(-1)
     const [hoverTags, setHoverTags] = useState(-1)
-
+    // Função para mudar o link selecionado
     const handleLinkClick = (index) => {
         setSelectedLinks(index)
     }
 
+    // Função para mudar a tag selecionada
     const handleTagClick = (index) => {
         setSelectedTags(index)
     }
@@ -42,6 +43,7 @@ const Notes = () => {
         setIsOpen(false)
     }
 
+    // Valores iniciais do formulário
     const initialValues = {
         title: '',
         content: '',
@@ -55,6 +57,7 @@ const Notes = () => {
         tag: Yup.string().required('Obrigatório'),
     })
 
+    // Função para adicionar uma nova nota
     const handleFormSubmit = (values) => {
         let newNote = {
             ...values,
@@ -77,6 +80,7 @@ const Notes = () => {
         setIsOpen(false)
     }
 
+    // Função que pega os dados do localStorage se existir, e seta no estado notes
     useEffect(() => {
         const storedNotes = JSON.parse(localStorage.getItem('notes'))
         if (storedNotes) {
@@ -237,9 +241,9 @@ const Notes = () => {
                         </button>
                     </div>
                 </div>
-                {/* <div className="col-span-6 flex flex-wrap content-start justify-center gap-4 bg-secondary rounded-md p-4"> */}
                 <div className="col-span-12 lg:col-span-8 xl:col-span-9 2xl:col-span-10 flex flex-wrap content-start justify-center gap-4 bg-secondary rounded-md p-4">
                     <Card />
+                    {/* Modal de criar nova nota */}
                     <Modal
                         isOpen={isOpen}
                         onClose={handleCloseModal}
@@ -263,7 +267,6 @@ const Notes = () => {
                                         />
                                         <SelectField
                                             name="tag"
-                                            // label="Tag"
                                             options={[
                                                 {
                                                     label: 'sem tag',
