@@ -14,18 +14,22 @@ const NotesProvider = ({ children }) => {
         },
         {
             id: 1,
-            title: 'Pessoal',
+            title: 'sem tag',
         },
         {
             id: 2,
-            title: 'Trabalho',
+            title: 'Pessoal',
         },
         {
             id: 3,
-            title: 'Social',
+            title: 'Trabalho',
         },
         {
             id: 4,
+            title: 'Social',
+        },
+        {
+            id: 5,
             title: 'Importante',
         },
     ]
@@ -46,7 +50,14 @@ const NotesProvider = ({ children }) => {
     ]
 
     return (
-        <NotesContext.Provider value={{ notes, setNotes, dataTags, dataLinks }}>
+        <NotesContext.Provider
+            value={{
+                notes,
+                setNotes,
+                dataTags,
+                dataLinks,
+            }}
+        >
             {children}
         </NotesContext.Provider>
     )

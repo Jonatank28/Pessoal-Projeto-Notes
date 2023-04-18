@@ -13,6 +13,7 @@ const Notes = () => {
     const [isOpen, setIsOpen] = useState(false)
     // Pega os dados do contexto
     const { notes, setNotes, dataTags, dataLinks } = useContext(NotesContext)
+    const [notesSelected, setNotesSelected] = useState([])
     // Seta que o link selecionado por padrão é o primeiro do array
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
@@ -25,12 +26,51 @@ const Notes = () => {
     const [hoverTags, setHoverTags] = useState(-1)
     // Função para mudar o link selecionado
     const handleLinkClick = (index) => {
+        if (index === 1) {
+            const favoritas = notes.filter((note) => note.favorite === true)
+            setNotes(favoritas)
+        } else {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            if (storedNotes) {
+                setNotes(storedNotes)
+            }
+        }
         setSelectedLinks(index)
     }
 
     // Função para mudar a tag selecionada
     const handleTagClick = (index) => {
+        //  Mostrara as notas de acordo com a tag selecionada
+        if (index === 0) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            setNotes(storedNotes)
+        } else if (index === 1) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            const semTag = storedNotes.filter((note) => note.tag === 'sem tag')
+            setNotes(semTag)
+        } else if (index === 2) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            const pessoal = storedNotes.filter((note) => note.tag === 'pessoal')
+            setNotes(pessoal)
+        } else if (index === 3) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            const trabalho = storedNotes.filter(
+                (note) => note.tag === 'trabalho'
+            )
+            setNotes(trabalho)
+        } else if (index === 4) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            const social = storedNotes.filter((note) => note.tag === 'social')
+            setNotes(social)
+        } else if (index === 5) {
+            const storedNotes = JSON.parse(localStorage.getItem('notes'))
+            const importante = storedNotes.filter(
+                (note) => note.tag === 'important'
+            )
+            setNotes(importante)
+        }
         setSelectedTags(index)
+        console.log(notes)
     }
 
     // Abrir modal
