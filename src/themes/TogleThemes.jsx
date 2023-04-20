@@ -23,7 +23,12 @@ const TogleThemes = ({ className, ...props }) => {
 
     return (
         <>
-            <button onClick={HandleClickTheme} className={className} {...props}>
+            <button
+                style={{ zIndex: '99999' }}
+                onClick={HandleClickTheme}
+                className={className}
+                {...props}
+            >
                 {theme === 'dark' ? '🌞' : '🌙'}
             </button>
         </>

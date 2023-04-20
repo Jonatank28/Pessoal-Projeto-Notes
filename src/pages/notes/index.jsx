@@ -7,13 +7,20 @@ import * as Yup from 'yup'
 import { NotesContext } from '../../contexts/notesContext'
 import { v4 as uuidv4 } from 'uuid'
 import SelectField from '@/components/Form/Select'
+import { GiHamburgerMenu } from 'react-icons/gi'
 
 const Notes = () => {
     // Seta que o modal está fechado por padrão
     const [isOpen, setIsOpen] = useState(false)
     // Pega os dados do contexto
-    const { notes, setNotes, dataTags, dataLinks } = useContext(NotesContext)
-    const [notesSelected, setNotesSelected] = useState([])
+    const {
+        notes,
+        setNotes,
+        dataTags,
+        dataLinks,
+        setNotesSelected,
+        notesSelectded,
+    } = useContext(NotesContext)
     // Seta que o link selecionado por padrão é o primeiro do array
     const [selectedLinks, setSelectedLinks] = useState(
         dataLinks.findIndex((link) => link.id === 1)
@@ -27,12 +34,37 @@ const Notes = () => {
     // Função para mudar o link selecionado
     const handleLinkClick = (index) => {
         if (index === 1) {
+            // let tagSelect = 'sem tag'
+
+            // switch (selectedTags) {
+            //     case 0:
+            //         tagSelect = 'todas as tags'
+            //         break
+            //     case 1:
+            //         tagSelect = 'sem tag'
+            //         break
+            //     case 2:
+            //         tagSelect = 'pessoal'
+            //         break
+            //     case 3:
+            //         tagSelect = 'trabalho'
+            //         break
+            //     case 4:
+            //         tagSelect = 'social'
+            //         break
+            //     case 5:
+            //         tagSelect = 'important'
+            //         break
+            // }
+
             const favoritas = notes.filter((note) => note.favorite === true)
             setNotes(favoritas)
+            setNotesSelected(favoritas)
         } else {
             const storedNotes = JSON.parse(localStorage.getItem('notes'))
             if (storedNotes) {
                 setNotes(storedNotes)
+                setNotesSelected(storedNotes)
             }
         }
         setSelectedLinks(index)
@@ -41,42 +73,57 @@ const Notes = () => {
     // Função para mudar a tag selecionada
     const handleTagClick = (index) => {
         //  Mostrara as notas de acordo com a tag selecionada
-        if (index === 0) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            setNotes(storedNotes)
-        } else if (index === 1) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            const semTag = storedNotes.filter((note) => note.tag === 'sem tag')
-            setNotes(semTag)
+        if (index === 1) {
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            const notesFiltered = notes.filter((note) => note.tag === 'sem tag')
+            setNotesSelected(notesFiltered)
         } else if (index === 2) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            const pessoal = storedNotes.filter((note) => note.tag === 'pessoal')
-            setNotes(pessoal)
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            const notesFiltered = notes.filter((note) => note.tag === 'pessoal')
+            setNotesSelected(notesFiltered)
         } else if (index === 3) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            const trabalho = storedNotes.filter(
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            const notesFiltered = notes.filter(
                 (note) => note.tag === 'trabalho'
             )
-            setNotes(trabalho)
+            setNotesSelected(notesFiltered)
         } else if (index === 4) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            const social = storedNotes.filter((note) => note.tag === 'social')
-            setNotes(social)
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            const notesFiltered = notes.filter((note) => note.tag === 'social')
+            setNotesSelected(notesFiltered)
         } else if (index === 5) {
-            const storedNotes = JSON.parse(localStorage.getItem('notes'))
-            const importante = storedNotes.filter(
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            const notesFiltered = notes.filter(
                 (note) => note.tag === 'important'
             )
-            setNotes(importante)
+            setNotesSelected(notesFiltered)
+        } else {
+            const notes = JSON.parse(localStorage.getItem('notes'))
+            setNotesSelected(notes)
         }
+
         setSelectedTags(index)
-        console.log(notes)
+        console.log(notesSelectded)
     }
 
     // Abrir modal
     const handleOpenModal = () => {
         setIsOpen(true)
     }
+
+    // Função que ao apertar CRT + N abre o modal
+    const handleKeyDown = (e) => {
+        if (e.ctrlKey && e.key === '/') {
+            setIsOpen(true)
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown)
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [notesSelectded])
 
     // Fechar modal
     const handleCloseModal = () => {
@@ -92,9 +139,9 @@ const Notes = () => {
 
     //  Valida os campos do formulário
     const NewNoteFormSchema = Yup.object().shape({
-        title: Yup.string().required('Obrigatório'),
-        content: Yup.string().required('Obrigatório'),
-        tag: Yup.string().required('Obrigatório'),
+        title: Yup.string().required('Campo Obrigatório'),
+        content: Yup.string().required('Campo Obrigatório'),
+        tag: Yup.string().required('Campo Obrigatório'),
     })
 
     // Função para adicionar uma nova nota
@@ -115,6 +162,7 @@ const Notes = () => {
 
         console.log(newNote)
         setNotes([...notes, newNote])
+        setNotesSelected([...notes, newNote])
         localStorage.setItem('notes', JSON.stringify([...notes, newNote]))
 
         setIsOpen(false)
@@ -125,12 +173,15 @@ const Notes = () => {
         const storedNotes = JSON.parse(localStorage.getItem('notes'))
         if (storedNotes) {
             setNotes(storedNotes)
+            setNotesSelected(storedNotes)
         }
     }, [])
 
     return (
         <main className="bg-primary w-screen h-screen flex items-center justify-center">
             <div className="w-[100vw] h-[100vh] bg-primary grid grid-cols-12 gap-6 ">
+                {/* Mobile / Menu Hamburguer */}
+                <GiHamburgerMenu className="absolute right-4 top-5 lg:hidden cursor-pointer text-lg" />
                 <div className="hidden lg:col-span-4 xl:col-span-3 2xl:col-span-2 bg-secondary rounded-md p-4 lg:flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-3">
@@ -146,18 +197,15 @@ const Notes = () => {
                                     <path
                                         d="M20.3116 12.6473L20.8293 10.7154C21.4335 8.46034 21.7356 7.3328 21.5081 6.35703C21.3285 5.58657 20.9244 4.88668 20.347 4.34587C19.6157 3.66095 18.4881 3.35883 16.2331 2.75458C13.978 2.15033 12.8504 1.84821 11.8747 2.07573C11.1042 2.25537 10.4043 2.65945 9.86351 3.23687C9.27709 3.86298 8.97128 4.77957 8.51621 6.44561C8.43979 6.7254 8.35915 7.02633 8.27227 7.35057L8.27222 7.35077L7.75458 9.28263C7.15033 11.5377 6.84821 12.6652 7.07573 13.641C7.25537 14.4115 7.65945 15.1114 8.23687 15.6522C8.96815 16.3371 10.0957 16.6392 12.3508 17.2435L12.3508 17.2435C14.3834 17.7881 15.4999 18.0873 16.415 17.9744C16.5152 17.9621 16.6129 17.9448 16.7092 17.9223C17.4796 17.7427 18.1795 17.3386 18.7203 16.7612C19.4052 16.0299 19.7074 14.9024 20.3116 12.6473Z"
                                         stroke="currentColor"
-                                        stroke-width="1.5"
                                     ></path>
                                     <path
                                         opacity="0.5"
                                         d="M16.415 17.9741C16.2065 18.6126 15.8399 19.1902 15.347 19.6519C14.6157 20.3368 13.4881 20.6389 11.2331 21.2432C8.97798 21.8474 7.85044 22.1495 6.87466 21.922C6.10421 21.7424 5.40432 21.3383 4.86351 20.7609C4.17859 20.0296 3.87647 18.9021 3.27222 16.647L2.75458 14.7151C2.15033 12.46 1.84821 11.3325 2.07573 10.3567C2.25537 9.58627 2.65945 8.88638 3.23687 8.34557C3.96815 7.66065 5.09569 7.35853 7.35077 6.75428C7.77741 6.63996 8.16368 6.53646 8.51621 6.44531"
                                         stroke="currentColor"
-                                        stroke-width="1.5"
                                     ></path>
                                     <path
                                         d="M11.7769 10L16.6065 11.2941"
                                         stroke="currentColor"
-                                        stroke-width="1.5"
                                         stroke-linecap="round"
                                     ></path>
                                     <path
@@ -277,7 +325,7 @@ const Notes = () => {
                             class="w-full btn btn-primary"
                             onClick={handleOpenModal}
                         >
-                            Adicionar nova nota
+                            Adicionar nova nota / Ctr + /
                         </button>
                     </div>
                 </div>

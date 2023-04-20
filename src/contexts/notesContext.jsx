@@ -6,6 +6,7 @@ const NotesContext = createContext({})
 
 const NotesProvider = ({ children }) => {
     const [notes, setNotes] = useState([])
+    const [notesSelectded, setNotesSelected] = useState([])
 
     const dataTags = [
         {
@@ -56,6 +57,8 @@ const NotesProvider = ({ children }) => {
                 setNotes,
                 dataTags,
                 dataLinks,
+                notesSelectded,
+                setNotesSelected,
             }}
         >
             {children}
